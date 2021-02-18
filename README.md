@@ -71,8 +71,20 @@ These steps need to be done once each time a new project is started.
 > **NOTE:** If the new Azure Active Directory tenant does not have a subscription, then run instead ``az login --tenant <<tenand_id>> --allow-no-subscriptions``.
 
 * Extract the folder ``fabrikate-defs`` and push these files into a new repo. This is the admin HLD repo. Make sure to read README.md in that folder to do the configs required to set up AAD and RBAC setup.
-* Make a new repo called k8smanifests. this will be your admin manifest repo as tracked by flux gitOps admin controller.
-* Setup github actions pipeline using ``.github/workflows/generate-manifests-gh.yaml`` as the sample and use the above repo as the repo to write the generated k8s manifests.
+  * [Create a new Github repo](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-new-repository).
+  * Run the following to copy `fabrikate-defs` locally and push the new folder to the remote repo.
+  ```bash
+  cp -r magicaks/fabrikate-defs ./fabrikate-defs
+  cd ./fabrikate-defs
+  git init
+  git add .
+  git commit -m "initial commit"
+  git branch -M main
+  git remote add origin https://github.com/<your-github-account>/fabrikate-defs.git
+  git push -u origin main
+  ```
+* [Create a new Github repo](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-new-repository). called `k8smanifests`. this will be your admin manifest repo as tracked by flux gitOps admin controller.
+* [Setup Github actions pipeline](https://docs.github.com/en/actions/guides/setting-up-continuous-integration-using-workflow-templates_) using ``.github/workflows/generate-manifests-gh.yaml`` as the sample and use the `k8smanifest` repo as the repo to write the generated k8s manifests. To do that, edit this line:  `REPO: https://github.com/<youraccount>/k8smanifests.git`.
 * Make another repo called k8sworkloads, a sample is [here](https://github.com/sachinkundu/k8sworkloads). This is where non-privileged workloads should be listed. This is tracked by flux gitOps non admin controller.
 
 ### Provisioning resources
